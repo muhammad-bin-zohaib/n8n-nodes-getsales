@@ -1,5 +1,4 @@
 import type {
-	IDataObject,
 	IHookFunctions,
 	INodeType,
 	INodeTypeDescription,
@@ -145,13 +144,14 @@ export class GetSalesTrigger implements INodeType {
 						request_method: 'POST',
 						target_url: webhookUrl,
 					});
-					const created = response?.data as IDataObject | undefined;
-					if (!created?.uuid) {
+					// GetSales returns the created webhook object directly at the top level
+					// (not wrapped in { data: ... } as the OpenAPI spec describes).
+					if (!response?.uuid) {
 						throw new NodeApiError(this.getNode(), {
 							message: `GetSales did not return a webhook UUID when registering event "${event}". Raw response: ${JSON.stringify(response)}`,
 						});
 					}
-					stored[event] = created.uuid as string;
+					stored[event] = response.uuid as string;
 				}
 
 				return true;
