@@ -1,6 +1,6 @@
 {
     "name": "n8n-nodes-getsales",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "n8n community nodes for GetSales: CRM/LinkedIn/email actions plus a webhook trigger",
     "license": "MIT",
     "homepage": "https://help.getsales.io",
@@ -15,15 +15,15 @@
         "type": "git",
         "url": "https://github.com/muhammad-bin-zohaib/n8n-nodes-getsales.git"
     },
-   "scripts": {
-		"build": "n8n-node build",
-		"build:watch": "tsc --watch",
-		"dev": "n8n-node dev",
-		"lint": "n8n-node lint",
-		"lint:fix": "n8n-node lint --fix",
-		"release": "n8n-node release",
-		"prepublishOnly": "n8n-node prerelease"
-	},
+    "scripts": {
+        "build": "n8n-node build",
+        "build:watch": "tsc --watch",
+        "dev": "n8n-node dev",
+        "lint": "n8n-node lint",
+        "lint:fix": "n8n-node lint --fix",
+        "release": "n8n-node release",
+        "prepublishOnly": "n8n-node prerelease"
+    },
     "files": [
         "dist"
     ],
