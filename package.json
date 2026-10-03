@@ -13,7 +13,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/muhammad-bin-zohaib/n8n-nodes-getsales.git"
+        "url": "git+https://github.com/muhammad-bin-zohaib/n8n-nodes-getsales.git"
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "scripts": {
         "build": "n8n-node build",
