@@ -10,12 +10,11 @@ export const linkedinOperations: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: { show: { resource: ['linkedin'] } },
 		options: [
-			// "LinkedIn" is a brand name and must keep its internal capital I even in
-			// sentence case — the linter's sentence-case check doesn't know that.
-			/* eslint-disable n8n-nodes-base/node-param-operation-option-action-miscased */
-			{ name: 'List Messages', value: 'listMessages', action: 'List LinkedIn messages', description: 'List inbox and outbox LinkedIn messages' },
-			{ name: 'Send Message', value: 'sendMessage', action: 'Send a LinkedIn message', description: 'Send a LinkedIn message, connection note, or InMail' },
-			/* eslint-enable n8n-nodes-base/node-param-operation-option-action-miscased */
+			// The "action" field feeds an automated sentence-case check that mangles
+			// brand names with an internal capital (e.g. "LinkedIn" → "linked in").
+			// The Resource dropdown already reads "LinkedIn", so omit it here too.
+			{ name: 'List Messages', value: 'listMessages', action: 'List messages', description: 'List inbox and outbox LinkedIn messages' },
+			{ name: 'Send Message', value: 'sendMessage', action: 'Send a message', description: 'Send a LinkedIn message, connection note, or InMail' },
 		],
 		default: 'listMessages',
 	},

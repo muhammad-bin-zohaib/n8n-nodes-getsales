@@ -1,5 +1,5 @@
 import type { IDataObject, IExecuteFunctions, INodeExecutionData, INodeType, INodeTypeDescription } from 'n8n-workflow';
-import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
+import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { contactFields, contactOperations, executeContact } from './actions/contact';
 import { companyFields, companyOperations, executeCompany } from './actions/company';
@@ -83,12 +83,8 @@ export class GetSales implements INodeType {
 					returnData.push({ json: { error: (error as Error).message }, pairedItem: { item: i } });
 					continue;
 				}
-				if (error instanceof NodeApiError || error instanceof NodeOperationError) {
-					// Already a properly typed node error (thrown by getsalesApiRequest or
-					// above) — rethrow as-is instead of double-wrapping it.
-					// eslint-disable-next-line @n8n/community-nodes/require-node-api-error
-					throw error;
-				}
+				// getsalesApiRequest already throws NodeApiError for API failures; wrapping
+				// an already-typed error here just reuses its message, it doesn't nest it.
 				throw new NodeOperationError(this.getNode(), error as Error, { itemIndex: i });
 			}
 		}
