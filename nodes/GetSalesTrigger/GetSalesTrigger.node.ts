@@ -6,7 +6,7 @@ import type {
 	IWebhookFunctions,
 	IWebhookResponseData,
 } from 'n8n-workflow';
-import { NodeConnectionTypes } from 'n8n-workflow';
+import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { getsalesApiRequest } from '../../utils/getsalesApi';
 
 const EVENT_OPTIONS = [
@@ -109,6 +109,12 @@ export class GetSalesTrigger implements INodeType {
 
 			async create(this: IHookFunctions): Promise<boolean> {
 				const webhookUrl = this.getNodeWebhookUrl('default');
+				if (!webhookUrl) {
+					throw new NodeOperationError(
+						this.getNode(),
+						"Could not determine this trigger's webhook URL. Check that the n8n instance's Editor Base URL / WEBHOOK_URL is configured correctly.",
+					);
+				}
 				const selectedEvents = this.getNodeParameter('events', []) as string[];
 				const data = getStaticData.call(this);
 				if (!data.webhooksByEvent) data.webhooksByEvent = {};
@@ -139,7 +145,12 @@ export class GetSalesTrigger implements INodeType {
 						request_method: 'POST',
 						target_url: webhookUrl,
 					});
-					const created = response.data as IDataObject;
+					const created = response?.data as IDataObject | undefined;
+					if (!created?.uuid) {
+						throw new NodeApiError(this.getNode(), {
+							message: `GetSales did not return a webhook UUID when registering event "${event}". Raw response: ${JSON.stringify(response)}`,
+						});
+					}
 					stored[event] = created.uuid as string;
 				}
 
