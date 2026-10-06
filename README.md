@@ -10,14 +10,16 @@ outbound sales automation platform. It provides two nodes:
 
 [Installation](#installation)
 [Nodes](#nodes)
+[Usage](#usage)
 [Credentials](#credentials)
 [Compatibility](#compatibility)
 [Resources](#resources)
 [Version history](#version-history)
+[Author](#author)
 
 ## Installation
 
-Not published to npm yet. Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation once it is; until then, clone this repo and use `npm run dev` (or `n8n-node dev --external-n8n`) to test against a local or self-hosted n8n instance.
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation and install **`n8n-nodes-getsales`**.
 
 ## Nodes
 
@@ -50,7 +52,8 @@ Supported events:
 | Sender Profile Issue | `sender_profile_issue` |
 
 All 12 were confirmed either from real GetSales test-webhook deliveries or the GetSales OpenAPI
-webhook-event enum (see `../notes.md` at the project root for details and any later additions).
+webhook-event enum — see [CHANGELOG.md](./CHANGELOG.md) for when each was added, or the
+[GetSales API documentation](https://help.getsales.io) for the authoritative event list.
 
 ### GetSales
 
@@ -67,6 +70,41 @@ A standard Resource/Operation node calling the GetSales REST API directly (`http
 List/search operations support **Return All** (paginates automatically, GetSales page size up to
 100, or 500 for Emails) and a **Limit** when not returning everything.
 
+## Usage
+
+### Set up the credential
+
+1. In GetSales, go to **Team Settings → API Keys** and create a key.
+
+   ![GetSales API Keys page](images/credential_setup.png)
+
+2. In n8n, add a new **GetSales API** credential and paste the key in. n8n tests it automatically against `GET /id/api/users/current` — a green "Connection tested successfully" confirms it's valid.
+
+   ![GetSales credential connected successfully in n8n](images/connection_tested_inside_n8n.png)
+
+### Example: list companies
+
+1. Add the **GetSales** node to your workflow, select your GetSales API credential.
+2. Set **Resource** to `Company` and **Operation** to `List`.
+3. Optionally narrow the results under **Filters** (e.g. by domain).
+4. Run the node — matching companies come back as output items.
+
+   ![GetSales node: List Companies with filters and example output](images/list_companies_with_output.png)
+
+### Example: trigger a workflow on a GetSales event
+
+1. Add the **GetSales Trigger** node to a new workflow, select your GetSales API credential.
+2. In **Events**, select one or more events — e.g. `Contact Replied via LinkedIn Message`.
+3. Use **Execute step** to pull in a live test event and see the real payload shape:
+
+   ![GetSales Trigger node with an event selected and example output](images/trigger_with_output.png)
+
+4. Activate the workflow — the node automatically creates a matching webhook in GetSales (visible under **Team Settings → Webhooks**), no manual setup needed:
+
+   ![Webhook automatically created inside GetSales](images/webhook_showed_Inside_getsales.png)
+
+5. From then on, whenever that event happens in GetSales, the workflow runs with the full original event payload as the output.
+
 ## Credentials
 
 ### GetSales Trigger
@@ -76,7 +114,7 @@ documents no signature/HMAC scheme for verifying webhook authenticity, so none i
 
 ### GetSales (action node) and webhook auto-registration
 Both require the **GetSales API** credential:
-- **API Key** — create one in GetSales under **Workspace Settings → API Keys**.
+- **API Key** — create one in GetSales under **Team Settings → API Keys**.
 - Sent as `Authorization: Bearer <API Key>`.
 - Credential test calls `GET /id/api/users/current`.
 
@@ -93,5 +131,11 @@ scaffolded with `@n8n/node-cli`). No known version incompatibilities.
 
 ## Version history
 
-- **0.2.0** — Added the GetSales action node (20 operations across Contact/Company/LinkedIn/Email/Flow) and the `GetSales API` credential. Upgraded GetSales Trigger to automatic webhook registration/cleanup and expanded to 12 confirmed events.
+See [CHANGELOG.md](./CHANGELOG.md) for the full, generated version-by-version history.
+
+- **0.2.x** — Added the GetSales action node (20 operations across Contact/Company/LinkedIn/Email/Flow) and the `GetSales API` credential. Upgraded GetSales Trigger to automatic webhook registration/cleanup and expanded to 12 confirmed events. Several patch releases fixed publishing/provenance issues and a webhook-registration response-parsing bug found during real-world testing.
 - **0.1.0** — Initial release: GetSales Trigger with 5 confirmed events, manual webhook setup.
+
+## Author
+
+[Muhammad Bin Zohaib](https://github.com/muhammad-bin-zohaib), CEO of [AI Coders](https://aicoders.dev).
