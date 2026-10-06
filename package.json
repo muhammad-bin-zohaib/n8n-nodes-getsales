@@ -1,6 +1,6 @@
 {
     "name": "n8n-nodes-getsales",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "description": "n8n community nodes for GetSales: CRM/LinkedIn/email actions plus a webhook trigger",
     "license": "MIT",
     "homepage": "https://help.getsales.io",
